@@ -406,6 +406,204 @@
                 setTimeout(() => { if(map) map.invalidateSize(); }, 100);
             }
         }
+
+
+        
     </script>
+
+    <p style="color: #666; font-size: 14px;">Human Resources & Ops V6.0</p>
+            <input type="text" placeholder="User ID" value="ADMIN-01">
+            <input type="password" placeholder="Password" value="password">
+            <button class="btn" style="width: 100%; justify-content: center;" onclick="login()">SECURE LOGIN</button>
+        </div>
+    </div>
+
+    <div id="dashboard-screen" class="hidden">
+        
+        <div class="sidebar">
+            <div class="sidebar-header"><i class="fa-solid fa-layer-group"></i> COMMAND CENTER</div>
+            <div class="menu-item active" onclick="showView('war-room', this)"><i class="fa-solid fa-map-location-dot"></i> Live Map</div>
+            <div class="menu-item" onclick="showView('hr-module', this)"><i class="fa-solid fa-users"></i> 201 Files (HR)</div>
+            <div class="menu-item" onclick="showView('calendar-view', this)"><i class="fa-solid fa-calendar-days"></i> Schedule</div>
+            <div class="menu-item" onclick="showView('inventory', this)"><i class="fa-solid fa-boxes-stacked"></i> Inventory</div>
+            <div style="margin-top: auto;"></div>
+            <div class="menu-item" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</div>
+        </div>
+
+        <div class="main-content">
+            
+            <div id="war-room" class="view-section">
+                <div class="header">
+                    <h1 style="color: var(--navy); margin: 0;">Live Fleet Tracker</h1>
+                    <div style="color: #666;"><i class="fa-regular fa-clock"></i> <span id="clock">10:42 AM</span></div>
+                </div>
+                <div id="map-container"></div>
+            </div>
+
+            <div id="hr-module" class="view-section hidden">
+                <div class="header">
+                    <h1 style="color: var(--navy); margin: 0;">Employee Database (201 Files)</h1>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" placeholder="Search Employee..." style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 200px;">
+                        <button class="btn"><i class="fa-solid fa-user-plus"></i> New Hire</button>
+                    </div>
+                </div>
+
+                <div class="file-grid">
+                    <div class="file-card">
+                        <div style="position: absolute; top: 15px; right: 15px;"><span class="badge green">ACTIVE</span></div>
+                        <div style="text-align: center;">
+                            <img src="https://i.pravatar.cc/150?img=11" class="emp-photo">
+                            <h3 style="margin: 0; color: var(--navy);">John Doe</h3>
+                            <p style="margin: 5px 0 15px 0; color: #777; font-size: 13px;">Senior Truck Driver</p>
+                        </div>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
+                            <div class="info-row"><span>ID No:</span> <b>EMP-2021-04</b></div>
+                            <div class="info-row"><span>Department:</span> <b>Logistics / Fleet</b></div>
+                            <div class="info-row"><span>Mobile:</span> <b>0917-123-4567</b></div>
+                        </div>
+                        <button class="btn outline" style="width: 100%; justify-content: center;" onclick="open201Modal('John Doe', 'Senior Truck Driver', 'https://i.pravatar.cc/150?img=11')">
+                            <i class="fa-regular fa-folder-open"></i> View 201 File
+                        </button>
+                    </div>
+
+                    <div class="file-card">
+                        <div style="position: absolute; top: 15px; right: 15px;"><span class="badge red">SICK LEAVE</span></div>
+                        <div style="text-align: center;">
+                            <img src="https://i.pravatar.cc/150?img=8" class="emp-photo">
+                            <h3 style="margin: 0; color: var(--navy);">Mike Santos</h3>
+                            <p style="margin: 5px 0 15px 0; color: #777; font-size: 13px;">Forklift Operator</p>
+                        </div>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
+                            <div class="info-row"><span>ID No:</span> <b>EMP-2022-12</b></div>
+                            <div class="info-row"><span>Department:</span> <b>Warehouse</b></div>
+                            <div class="info-row"><span>Mobile:</span> <b>0918-999-8888</b></div>
+                        </div>
+                        <button class="btn outline" style="width: 100%; justify-content: center;" onclick="open201Modal('Mike Santos', 'Forklift Operator', 'https://i.pravatar.cc/150?img=8')">
+                            <i class="fa-regular fa-folder-open"></i> View 201 File
+                        </button>
+                    </div>
+
+                    <div class="file-card">
+                        <div style="position: absolute; top: 15px; right: 15px;"><span class="badge green">ACTIVE</span></div>
+                        <div style="text-align: center;">
+                            <img src="https://i.pravatar.cc/150?img=5" class="emp-photo">
+                            <h3 style="margin: 0; color: var(--navy);">Sarah Lee</h3>
+                            <p style="margin: 5px 0 15px 0; color: #777; font-size: 13px;">Dispatcher</p>
+                        </div>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
+                            <div class="info-row"><span>ID No:</span> <b>EMP-2020-01</b></div>
+                            <div class="info-row"><span>Department:</span> <b>Operations</b></div>
+                            <div class="info-row"><span>Mobile:</span> <b>0922-333-4444</b></div>
+                        </div>
+                        <button class="btn outline" style="width: 100%; justify-content: center;" onclick="open201Modal('Sarah Lee', 'Dispatcher', 'https://i.pravatar.cc/150?img=5')">
+                            <i class="fa-regular fa-folder-open"></i> View 201 File
+                        </button>
+                    </div>
+
+                     <div class="file-card">
+                        <div style="position: absolute; top: 15px; right: 15px;"><span class="badge amber">ON BREAK</span></div>
+                        <div style="text-align: center;">
+                            <img src="https://i.pravatar.cc/150?img=13" class="emp-photo">
+                            <h3 style="margin: 0; color: var(--navy);">Rico Jose</h3>
+                            <p style="margin: 5px 0 15px 0; color: #777; font-size: 13px;">Junior Driver</p>
+                        </div>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
+                            <div class="info-row"><span>ID No:</span> <b>EMP-2023-08</b></div>
+                            <div class="info-row"><span>Department:</span> <b>Logistics / Fleet</b></div>
+                            <div class="info-row"><span>Mobile:</span> <b>0917-555-6666</b></div>
+                        </div>
+                        <button class="btn outline" style="width: 100%; justify-content: center;" onclick="open201Modal('Rico Jose', 'Junior Driver', 'https://i.pravatar.cc/150?img=13')">
+                            <i class="fa-regular fa-folder-open"></i> View 201 File
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="calendar-view" class="view-section hidden">
+                <div class="header"><h1>Schedule</h1></div>
+                <div class="calendar-grid">
+                     <div class="calendar-day"><b>01</b><br><div class="event-pill" style="background:var(--navy)">Route 101</div></div>
+                     <div class="calendar-day"><b>02</b><br><div class="event-pill" style="background:var(--red)">Sick: Mike</div></div>
+                     <div class="calendar-day"><b>03</b></div>
+                     <div class="calendar-day"><b>04</b><br><div class="event-pill" style="background:var(--navy)">Route 102</div></div>
+                     <div class="calendar-day"><b>05</b><br><div class="event-pill" style="background:var(--amber)">Maintenance</div></div>
+                     <div class="calendar-day"><b>06</b></div>
+                     <div class="calendar-day"><b>07</b></div>
+                </div>
+            </div>
+
+             <div id="inventory" class="view-section hidden">
+                <div class="header"><h1>Inventory</h1></div>
+                <table class="data-table">
+                    <tr><th>SKU</th><th>Item</th><th>Qty</th><th>Status</th></tr>
+                    <tr><td>#991</td><td>Tires</td><td>12</td><td><span class="badge green">OK</span></td></tr>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="file-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div style="background: var(--navy); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <i class="fa-solid fa-folder-open fa-lg"></i>
+                    <h2 style="margin: 0; font-size: 18px;">Employee 201 File</h2>
+                </div>
+                <button onclick="closeModal()" style="background:none; border:none; color:white; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+            
+            <div class="modal-tabs">
+                <div class="modal-tab active">Personal Information</div>
+                <div class="modal-tab">Employment History</div>
+                <div class="modal-tab">Government IDs</div>
+                <div class="modal-tab">Documents</div>
+            </div>
+
+            <div style="padding: 25px; overflow-y: auto;">
+                <div style="display: flex; gap: 25px;">
+                    <div style="width: 150px; text-align: center;">
+                        <img id="modal-img" src="" style="width: 120px; height: 120px; border-radius: 8px; border: 1px solid #ddd; object-fit: cover;">
+                        <button class="btn outline" style="width: 100%; font-size: 11px; margin-top: 10px;">Upload Photo</button>
+                        <div style="margin-top: 20px; text-align: left;">
+                            <label style="font-size: 10px; color: #999; font-weight: bold;">STATUS</label>
+                            <div style="color: var(--green); font-weight: bold; font-size: 14px;"><i class="fa-solid fa-circle" style="font-size: 10px;"></i> REGULAR</div>
+                        </div>
+                    </div>
+
+                    <div style="flex: 1;">
+                        <h2 id="modal-name" style="margin: 0 0 5px 0; color: var(--navy);"></h2>
+                        <p id="modal-role" style="color: #777; margin: 0 0 20px 0;"></p>
+
+                        <div class="form-grid">
+                            <div class="form-group"><label>Date Hired</label><div>March 15, 2021</div></div>
+                            <div class="form-group"><label>Date of Birth</label><div>November 2, 1988</div></div>
+                            
+                            <div class="form-group"><label>SSS Number</label><div>33-9876543-1</div></div>
+                            <div class="form-group"><label>PhilHealth No.</label><div>12-123456789-1</div></div>
+                            <div class="form-group"><label>TIN</label><div>123-456-789-000</div></div>
+                            <div class="form-group"><label>Pag-IBIG</label><div>1234-5678-9012</div></div>
+
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label>Current Address</label>
+                                <div>Block 5, Lot 2, Camella Homes, Quezon City, Metro Manila</div>
+                            </div>
+                            
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label style="color: var(--red);">Emergency Contact</label>
+                                <div><b>Maria Doe (Spouse)</b> - 0917-000-0000</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 15px 25px; text-align: right; border-top: 1px solid #eee;">
+                <button class="btn outline" onclick="closeModal()">Close</button>
+                <button class="btn">Print 201 File</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
