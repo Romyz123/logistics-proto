@@ -5,13 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logistics Enterprise System</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
     <style>
-        /* --- THEME: INDUSTRIAL CLARITY --- */
+        /* --- VISUAL DESIGN: INDUSTRIAL CLARITY --- */
         :root {
             --navy: #001F3F;
-            --blue-light: #3a506b;
             --light-grey: #F4F4F4;
             --green: #2ECC40;
             --amber: #FFDC00;
@@ -23,13 +20,10 @@
         body { margin: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--light-grey); color: #333; }
         .hidden { display: none !important; }
 
-        /* --- COMPONENTS --- */
-        .btn { background-color: var(--navy); color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: opacity 0.3s; display: inline-flex; align-items: center; gap: 8px;}
+        /* --- BUTTONS & INPUTS --- */
+        .btn { background-color: var(--navy); color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; transition: opacity 0.3s; }
         .btn:hover { opacity: 0.9; }
-        .btn.outline { background: transparent; border: 1px solid var(--navy); color: var(--navy); }
-        .btn.danger { background-color: var(--red); }
-        
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; color: white; text-transform: uppercase;}
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; color: white; }
         .badge.green { background-color: var(--green); }
         .badge.amber { background-color: var(--amber); color: black; }
         .badge.red { background-color: var(--red); }
@@ -41,57 +35,67 @@
 
         #dashboard-screen { display: flex; height: 100vh; }
         
-        .sidebar { width: 260px; background-color: white; border-right: 1px solid #ddd; display: flex; flex-direction: column; flex-shrink: 0;}
-        .sidebar-header { padding: 25px 20px; background-color: var(--navy); color: white; font-weight: bold; display: flex; align-items: center; gap: 10px;}
+        /* SIDEBAR */
+        .sidebar { width: 250px; background-color: white; border-right: 1px solid #ddd; display: flex; flex-direction: column; }
+        .sidebar-header { padding: 20px; background-color: var(--navy); color: white; font-weight: bold; display: flex; align-items: center; gap: 10px;}
         .menu-item { padding: 15px 20px; cursor: pointer; color: #555; display: flex; align-items: center; border-left: 5px solid transparent; transition: all 0.2s; }
         .menu-item i { margin-right: 15px; width: 20px; text-align: center; }
         .menu-item:hover { background-color: #f8f9fa; color: var(--navy); }
         .menu-item.active { background-color: #e9ecef; color: var(--navy); border-left-color: var(--navy); font-weight: bold; }
 
-        .main-content { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column;}
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        /* MAIN CONTENT */
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         
-        /* --- MAP STYLING --- */
-        #map-container { height: 500px; width: 100%; border-radius: 8px; border: 2px solid #ccc; z-index: 1; position: relative;}
-        
-        /* Custom Map Popup Styling (Uber Style) */
-        .leaflet-popup-content-wrapper { border-radius: 8px; padding: 0; overflow: hidden; }
-        .leaflet-popup-content { margin: 0; width: 200px !important;}
-        .driver-popup-header { background: var(--navy); color: white; padding: 10px; font-weight: bold; display: flex; align-items: center; gap: 10px;}
-        .driver-popup-body { padding: 10px; }
-        .driver-popup-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 13px; }
-        .driver-popup-img { width: 40px; height: 40px; border-radius: 50%; background: white; border: 2px solid white; }
-
-        /* --- WIDGETS --- */
-        .kpi-container { display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap;}
-        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); flex: 1; min-width: 200px; border-left: 5px solid var(--navy); }
+        /* CARDS */
+        .kpi-container { display: flex; gap: 20px; margin-bottom: 30px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); flex: 1; border-left: 5px solid var(--navy); }
         .card.good { border-left-color: var(--green); }
         .card.warning { border-left-color: var(--amber); }
         .card.critical { border-left-color: var(--red); }
-        .card h3 { margin: 0 0 10px 0; color: #777; font-size: 13px; text-transform: uppercase; }
-        .card .value { font-size: 28px; font-weight: bold; color: var(--navy); }
+        .card h3 { margin: 0 0 10px 0; color: #777; font-size: 14px; text-transform: uppercase; }
+        .card .value { font-size: 32px; font-weight: bold; color: var(--navy); }
+
+        /* DATA TABLES */
+        .data-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .data-table th { background-color: var(--navy); color: white; text-align: left; padding: 15px; }
+        .data-table td { padding: 15px; border-bottom: 1px solid var(--border); }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table tr:hover { background-color: #f9f9f9; }
+
+        /* LOGS LIST */
+        .log-list { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); max-height: 300px; overflow-y: auto; }
+        .log-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px; }
+        .log-item:last-child { border-bottom: none; }
+        .log-time { color: #999; font-size: 12px; }
+
+        /* DRIVER GRID */
+        .driver-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .driver-card { background: white; border-radius: 8px; padding: 20px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-top: 4px solid var(--navy); }
+        .driver-avatar { width: 80px; height: 80px; background-color: #ddd; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 30px; color: white; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-card">
-            <i class="fa-solid fa-map-location-dot fa-3x" style="color: var(--navy); margin-bottom: 20px;"></i>
-            <h2 style="color: var(--navy); margin-top: 0;">LOGISTICS ENTERPRISE</h2>
-            <p style="color: #666; font-size: 14px;">Live Fleet Tracker V4.0</p>
-            <input type="text" placeholder="User ID" value="ADMIN-01">
+            <i class="fa-solid fa-truck-fast fa-3x" style="color: var(--navy); margin-bottom: 20px;"></i>
+            <h2 style="color: var(--navy); margin-top: 0;">ENTERPRISE LOGISTICS</h2>
+            <p style="color: #666; font-size: 14px;">Secure Access Portal V2.1</p>
+            <input type="text" placeholder="Employee ID" value="ADMIN-01">
             <input type="password" placeholder="Password" value="password">
-            <button class="btn" style="width: 100%; justify-content: center;" onclick="login()">SECURE LOGIN</button>
+            <button class="btn" onclick="login()">SECURE LOGIN</button>
+            <p style="margin-top: 15px; font-size: 12px; color: #999;">System Status: <span style="color: var(--green)">● Online</span></p>
         </div>
     </div>
 
     <div id="dashboard-screen" class="hidden">
-        
         <div class="sidebar">
             <div class="sidebar-header"><i class="fa-solid fa-layer-group"></i> COMMAND CENTER</div>
-            <div class="menu-item active" onclick="showView('war-room', this)"><i class="fa-solid fa-gauge"></i> War Room (Map)</div>
-            <div class="menu-item" onclick="showView('hr-module', this)"><i class="fa-solid fa-users-gear"></i> HR & Staff</div>
+            <div class="menu-item active" onclick="showView('war-room', this)"><i class="fa-solid fa-gauge"></i> War Room</div>
             <div class="menu-item" onclick="showView('inventory', this)"><i class="fa-solid fa-boxes-stacked"></i> Inventory</div>
+            <div class="menu-item" onclick="showView('drivers', this)"><i class="fa-solid fa-id-card"></i> HR & Drivers</div>
+            <div class="menu-item" onclick="showView('fleet', this)"><i class="fa-solid fa-truck"></i> Fleet Maintenance</div>
             <div style="margin-top: auto;"></div>
             <div class="menu-item" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</div>
         </div>
@@ -100,129 +104,190 @@
             
             <div id="war-room" class="view-section">
                 <div class="header">
-                    <h1 style="color: var(--navy); margin: 0;">Live Fleet Tracker</h1>
-                    <div style="color: #666;"><i class="fa-regular fa-clock"></i> <span id="clock">10:42 AM</span></div>
+                    <h1 style="color: var(--navy); margin: 0;">Operations Overview</h1>
+                    <div style="color: #666;"><i class="fa-regular fa-clock"></i> Live Feed: <span id="clock">10:42 AM</span></div>
                 </div>
 
                 <div class="kpi-container">
-                    <div class="card good"><h3>Active Drivers</h3><div class="value">3 <span style="font-size:12px; color:green">Moving</span></div></div>
-                    <div class="card warning"><h3>Quezon City Hub</h3><div class="value">Heavy Traffic</div></div>
-                    <div class="card critical"><h3>Emergency</h3><div class="value">0</div></div>
+                    <div class="card good">
+                        <h3>Active Drivers</h3>
+                        <div class="value">14 <span style="font-size: 14px; color: var(--green); font-weight: normal;">(+2)</span></div>
+                    </div>
+                    <div class="card warning">
+                        <h3>Pending Pickups</h3>
+                        <div class="value">08</div>
+                    </div>
+                    <div class="card critical">
+                        <h3>Emergency Alerts</h3>
+                        <div class="value">01 <span style="font-size: 14px; color: var(--red); font-weight: normal;">(Flat Tire)</span></div>
+                    </div>
+                    <div class="card">
+                        <h3>Daily Revenue</h3>
+                        <div class="value">₱124k</div>
+                    </div>
                 </div>
 
-                <div id="map-container"></div>
-                <p style="color:#666; font-size: 12px; margin-top: 10px;">* Real-time GPS updates (Simulated for Prototype) in Quezon City Area.</p>
+                <div style="display: flex; gap: 20px;">
+                    <div style="flex: 2; background: #e0e4e8; height: 400px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px dashed #ccc;">
+                        <i class="fa-solid fa-map-location-dot fa-4x" style="color: #999; margin-bottom: 10px;"></i>
+                        <h3 style="color: #777;">Live GPS Map Module</h3>
+                        <p style="color: #999; font-size: 12px;">Google Maps API Integration Required</p>
+                    </div>
+
+                    <div style="flex: 1;">
+                        <h3 style="margin-top: 0; color: var(--navy);">Recent Activity</h3>
+                        <div class="log-list">
+                            <div class="log-item">
+                                <div><span class="badge green">DELIVERED</span> Order #4492</div>
+                                <div class="log-time">2m ago</div>
+                            </div>
+                            <div class="log-item">
+                                <div><span class="badge amber">DELAY</span> Driver Mike stuck in traffic</div>
+                                <div class="log-time">5m ago</div>
+                            </div>
+                            <div class="log-item">
+                                <div><span class="badge red">ALERT</span> Vehicle V-02 Engine Heat</div>
+                                <div class="log-time">12m ago</div>
+                            </div>
+                            <div class="log-item">
+                                <div><span class="badge green">LOGIN</span> Dispatcher Admin</div>
+                                <div class="log-time">20m ago</div>
+                            </div>
+                            <div class="log-item">
+                                <div><span class="badge green">STOCK</span> 500 Units Received</div>
+                                <div class="log-time">1h ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div id="hr-module" class="view-section hidden">
-                <div class="header"><h1>Employee Management</h1></div>
-                <div class="card"><p>HR Module Content hidden for map demo...</p></div>
+            <div id="inventory" class="view-section hidden">
+                <div class="header">
+                    <h1 style="color: var(--navy); margin: 0;">Warehouse Inventory</h1>
+                    <button class="btn" style="width: auto;"><i class="fa-solid fa-plus"></i> Add Item</button>
+                </div>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>SKU</th>
+                            <th>Item Name</th>
+                            <th>Category</th>
+                            <th>Location</th>
+                            <th>Quantity</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#SKU-992</td>
+                            <td>Industrial Hydraulic Pump</td>
+                            <td>Machinery</td>
+                            <td>Aisle 4-B</td>
+                            <td>42</td>
+                            <td><span class="badge green">In Stock</span></td>
+                        </tr>
+                        <tr>
+                            <td>#SKU-102</td>
+                            <td>Safety Gloves (L)</td>
+                            <td>PPE</td>
+                            <td>Aisle 1-A</td>
+                            <td>1,200</td>
+                            <td><span class="badge green">In Stock</span></td>
+                        </tr>
+                        <tr>
+                            <td>#SKU-554</td>
+                            <td>Forklift Tires (Standard)</td>
+                            <td>Spares</td>
+                            <td>Zone C</td>
+                            <td>4</td>
+                            <td><span class="badge red">Critical</span></td>
+                        </tr>
+                        <tr>
+                            <td>#SKU-331</td>
+                            <td>Packing Tape (Heavy)</td>
+                            <td>Packaging</td>
+                            <td>Aisle 2-C</td>
+                            <td>150</td>
+                            <td><span class="badge amber">Low Stock</span></td>
+                        </tr>
+                        <tr>
+                            <td>#SKU-888</td>
+                            <td>LED Work Lights</td>
+                            <td>Electronics</td>
+                            <td>Aisle 5-E</td>
+                            <td>300</td>
+                            <td><span class="badge green">In Stock</span></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
-             <div id="inventory" class="view-section hidden">
-                <div class="header"><h1>Inventory</h1></div>
-                <div class="card"><p>Inventory Module Content hidden for map demo...</p></div>
+            <div id="drivers" class="view-section hidden">
+                <div class="header">
+                    <h1 style="color: var(--navy); margin: 0;">Driver Roster</h1>
+                    <button class="btn" style="width: auto;">Message All</button>
+                </div>
+                
+                <div class="driver-grid">
+                    <div class="driver-card">
+                        <div class="driver-avatar" style="background-color: #3498db;">JD</div>
+                        <h3>John Doe</h3>
+                        <p style="color: #777; margin: 5px 0;">Truck: Isuzu Giga (T-01)</p>
+                        <span class="badge green">Active - Route 4</span>
+                        <div style="margin-top: 15px;">
+                            <button style="border: 1px solid #ccc; background: white; padding: 5px 10px; border-radius: 4px; cursor: pointer;"><i class="fa-solid fa-phone"></i></button>
+                            <button style="border: 1px solid #ccc; background: white; padding: 5px 10px; border-radius: 4px; cursor: pointer;"><i class="fa-solid fa-message"></i></button>
+                        </div>
+                    </div>
+                    <div class="driver-card" style="border-top-color: var(--red);">
+                        <div class="driver-avatar" style="background-color: #e74c3c;">MS</div>
+                        <h3>Mike Santos</h3>
+                        <p style="color: #777; margin: 5px 0;">Truck: Canter (T-04)</p>
+                        <span class="badge red">Emergency: Flat Tire</span>
+                         <div style="margin-top: 15px;">
+                            <button style="border: 1px solid #ccc; background: white; padding: 5px 10px; border-radius: 4px; cursor: pointer;"><i class="fa-solid fa-phone"></i></button>
+                            <button style="border: 1px solid #ccc; background: white; padding: 5px 10px; border-radius: 4px; cursor: pointer;"><i class="fa-solid fa-message"></i></button>
+                        </div>
+                    </div>
+                    <div class="driver-card">
+                        <div class="driver-avatar" style="background-color: #f1c40f; color: black;">AL</div>
+                        <h3>Alex Lim</h3>
+                        <p style="color: #777; margin: 5px 0;">Truck: --</p>
+                        <span class="badge amber">On Break</span>
+                         <div style="margin-top: 15px;">
+                            <button style="border: 1px solid #ccc; background: white; padding: 5px 10px; border-radius: 4px; cursor: pointer;"><i class="fa-solid fa-phone"></i></button>
+                        </div>
+                    </div>
+                    <div class="driver-card">
+                        <div class="driver-avatar" style="background-color: #9b59b6;">RJ</div>
+                        <h3>Rico Jose</h3>
+                        <p style="color: #777; margin: 5px 0;">Truck: Isuzu Elf (T-02)</p>
+                        <span class="badge green">Active - Route 9</span>
+                         <div style="margin-top: 15px;">
+                            <button style="border: 1px solid #ccc; background: white; padding: 5px 10px; border-radius: 4px; cursor: pointer;"><i class="fa-solid fa-phone"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="fleet" class="view-section hidden">
+                <div class="header"><h1>Fleet Maintenance</h1></div>
+                <div style="text-align: center; padding: 50px; color: #999;">
+                    <i class="fa-solid fa-wrench fa-3x"></i>
+                    <h3>Maintenance Module Under Construction</h3>
+                </div>
             </div>
 
         </div>
     </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
     <script>
-        // --- DATA: DRIVERS ---
-        // Simulating 3 drivers in Quezon City
-        const drivers = [
-            { 
-                id: 1, name: "John Doe", truck: "Isuzu Giga", plate: "NCA-1234", 
-                lat: 14.6507, lng: 121.0285, // Trinoma/SM North area
-                status: "Active", color: "blue", speed: "45 km/h"
-            },
-            { 
-                id: 2, name: "Mike Santos", truck: "L300 Van", plate: "XLM-992", 
-                lat: 14.6415, lng: 121.0423, // QC Circle area
-                status: "Active", color: "green", speed: "30 km/h"
-            },
-            { 
-                id: 3, name: "Rico Jose", truck: "Wing Van", plate: "RTY-551", 
-                lat: 14.6178, lng: 121.0572, // Cubao area
-                status: "Traffic", color: "orange", speed: "12 km/h"
-            }
-        ];
-
-        let map;
-        let markers = {};
-
-        // --- MAP LOGIC ---
-        function initMap() {
-            // 1. Initialize Map centered on Quezon City
-            if (map) return; // Prevent re-initializing
-            map = L.map('map-container').setView([14.6450, 121.0350], 13);
-
-            // 2. Add Tiles (OpenStreetMap - Free)
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors'
-            }).addTo(map);
-
-            // 3. Create Custom Icon Functions
-            const createIcon = (color) => {
-                return L.divIcon({
-                    className: 'custom-div-icon',
-                    html: `<div style="background-color:${color}; width: 15px; height: 15px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 5px black;"></div>`,
-                    iconSize: [20, 20],
-                    iconAnchor: [10, 10]
-                });
-            };
-
-            // 4. Add Drivers to Map
-            drivers.forEach(driver => {
-                const marker = L.marker([driver.lat, driver.lng], {
-                    icon: createIcon(driver.color === 'blue' ? '#001F3F' : (driver.color === 'orange' ? '#FFDC00' : '#2ECC40'))
-                }).addTo(map);
-                
-                // Uber-style Popup
-                const popupContent = `
-                    <div class="driver-popup-header">
-                        <div class="driver-popup-img" style="color: black; display: flex; align-items: center; justify-content: center;">${driver.name.charAt(0)}</div>
-                        <div>${driver.name}</div>
-                    </div>
-                    <div class="driver-popup-body">
-                        <div class="driver-popup-row"><b>Vehicle:</b> ${driver.truck}</div>
-                        <div class="driver-popup-row"><b>Plate:</b> ${driver.plate}</div>
-                        <div class="driver-popup-row"><b>Speed:</b> ${driver.speed}</div>
-                        <button class="btn" style="width: 100%; margin-top: 5px; font-size: 11px; padding: 5px;">CALL DRIVER</button>
-                    </div>
-                `;
-                
-                marker.bindPopup(popupContent);
-                markers[driver.id] = marker;
-            });
-
-            // 5. Simulate Movement (Animation)
-            setInterval(() => {
-                drivers.forEach(driver => {
-                    // Random small movement
-                    driver.lat += (Math.random() - 0.5) * 0.001;
-                    driver.lng += (Math.random() - 0.5) * 0.001;
-                    
-                    const marker = markers[driver.id];
-                    if(marker) {
-                        marker.setLatLng([driver.lat, driver.lng]);
-                    }
-                });
-            }, 1000); // Update every second
-        }
-
-        // --- GENERAL LOGIC ---
+        // --- LOGIC ---
         function login() {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('dashboard-screen').classList.remove('hidden');
-            
-            // Wait a moment for div to be visible, then load map
-            setTimeout(() => {
-                initMap();
-                map.invalidateSize(); // Fixes grey tiles issue
-            }, 100);
         }
 
         function logout() {
@@ -231,19 +296,20 @@
         }
 
         function showView(viewId, element) {
+            // Hide all views
             const views = document.querySelectorAll('.view-section');
             views.forEach(v => v.classList.add('hidden'));
+
+            // Show selected view
             document.getElementById(viewId).classList.remove('hidden');
 
+            // Update sidebar active state
             const menuItems = document.querySelectorAll('.menu-item');
             menuItems.forEach(item => item.classList.remove('active'));
             element.classList.add('active');
-
-            if(viewId === 'war-room' && map) {
-                setTimeout(() => map.invalidateSize(), 100);
-            }
         }
 
+        // Fake Clock
         setInterval(() => {
             const now = new Date();
             document.getElementById('clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
