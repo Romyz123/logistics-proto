@@ -49,7 +49,7 @@
         .menu-item:hover { background-color: #f8f9fa; color: var(--navy); }
         .menu-item.active { background-color: #e9ecef; color: var(--navy); border-left-color: var(--navy); font-weight: bold; }
 
-        .main-content { flex: 1; padding: 20px; overflow-y: hidden; display: flex; flex-direction: column;} /* No scroll on main, scroll inside modules */
+        .main-content { flex: 1; padding: 20px; overflow-y: hidden; display: flex; flex-direction: column;} 
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-shrink: 0;}
 
         /* --- DISPATCHER & MAP SPLIT VIEW --- */
@@ -68,27 +68,45 @@
         .fleet-sub { font-size: 11px; color: #777; margin-top: 3px; display: flex; gap: 10px;}
         .fleet-actions { display: flex; gap: 5px; }
 
-        /* --- MODAL (Generic) --- */
+        /* --- HR MODULE (201 FILES) --- */
+        .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; padding-bottom: 20px;}
+        .file-card { background: white; border-top: 4px solid var(--navy); border-radius: 8px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .file-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .emp-photo { width: 80px; height: 80px; border-radius: 50%; border: 3px solid #eee; object-fit: cover; margin-bottom: 10px; }
+        
+        /* --- CALENDAR --- */
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; height: 100%; overflow-y: auto;}
+        .calendar-day { background: white; min-height: 100px; padding: 10px; border: 1px solid #eee; border-radius: 4px; }
+        .day-label { font-weight: bold; color: #888; margin-bottom: 5px; display: block;}
+        .event-pill { font-size: 10px; padding: 3px 6px; margin-top: 4px; border-radius: 3px; color: white; cursor: pointer; display: flex; align-items: center; gap: 5px;}
+
+        /* --- MODALS --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: flex; justify-content: center; align-items: center; }
-        .modal-content { background: white; width: 500px; border-radius: 8px; overflow: hidden; animation: slideDown 0.2s; }
+        .modal-content { background: white; width: 600px; max-height: 90vh; border-radius: 8px; overflow: hidden; animation: slideDown 0.2s; display: flex; flex-direction: column;}
         .modal-header { background: var(--navy); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .modal-body { padding: 20px; }
+        .modal-body { padding: 20px; overflow-y: auto; }
+        
+        .modal-tabs { display: flex; border-bottom: 1px solid #ddd; padding: 0 20px; background: #f9f9f9; }
+        .modal-tab { padding: 15px 20px; cursor: pointer; color: #666; border-bottom: 3px solid transparent; font-size: 13px; font-weight: 500; }
+        .modal-tab.active { color: var(--navy); border-bottom-color: var(--navy); background: white; }
+
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-size: 11px; color: #666; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
         .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        .info-display { background: #f4f4f4; padding: 10px; border-radius: 4px; border: 1px solid #eee; font-size: 14px; }
         
-        /* --- HR MODULE STYLES (Kept from previous version) --- */
-        .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding-bottom: 20px;}
-        .file-card { background: white; border-top: 4px solid var(--navy); border-radius: 8px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        @keyframes slideDown { from {transform: translateY(-20px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-card">
-            <i class="fa-solid fa-truck-ramp-box fa-3x" style="color: var(--navy); margin-bottom: 20px;"></i>
+            <i class="fa-solid fa-earth-americas fa-3x" style="color: var(--navy); margin-bottom: 20px;"></i>
             <h2 style="color: var(--navy); margin-top: 0;">LOGISTICS ENTERPRISE</h2>
-            <p style="color: #666; font-size: 14px;">Fleet Command V7.0</p>
+            <p style="color: #666; font-size: 14px;">Combined Operations System V8.0</p>
             <input type="text" placeholder="User ID" value="ADMIN-01">
             <input type="password" placeholder="Password" value="password">
             <button class="btn" style="width: 100%; justify-content: center; padding: 12px;" onclick="login()">SECURE LOGIN</button>
@@ -99,8 +117,9 @@
         
         <div class="sidebar">
             <div class="sidebar-header"><i class="fa-solid fa-layer-group"></i> COMMAND CENTER</div>
-            <div class="menu-item active" onclick="showView('dispatch-module', this)"><i class="fa-solid fa-map-location-dot"></i> Dispatch & Fleet</div>
+            <div class="menu-item active" onclick="showView('dispatch-module', this)"><i class="fa-solid fa-map-location-dot"></i> Fleet Command</div>
             <div class="menu-item" onclick="showView('hr-module', this)"><i class="fa-solid fa-users"></i> HR (201 Files)</div>
+            <div class="menu-item" onclick="showView('schedule-module', this)"><i class="fa-solid fa-calendar-days"></i> Master Schedule</div>
             <div class="menu-item" onclick="showView('inventory-module', this)"><i class="fa-solid fa-boxes-stacked"></i> Inventory</div>
             <div style="margin-top: auto;"></div>
             <div class="menu-item" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</div>
@@ -111,11 +130,7 @@
             <div id="dispatch-module" class="view-section" style="height: 100%; display: flex; flex-direction: column;">
                 <div class="header">
                     <h1 style="color: var(--navy); margin: 0;">Fleet Command</h1>
-                    
                     <div style="display: flex; gap: 15px;">
-                        <div style="background: white; padding: 5px 15px; border-radius: 4px; border-left: 3px solid var(--green); box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                            <span style="font-size: 10px; color: #888;">AVAILABLE</span><br><b>4 Vehicles</b>
-                        </div>
                         <div style="background: white; padding: 5px 15px; border-radius: 4px; border-left: 3px solid var(--blue-light); box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
                             <span style="font-size: 10px; color: #888;">ON ROUTE</span><br><b>2 Vehicles</b>
                         </div>
@@ -133,7 +148,6 @@
                         <div id="fleet-list-container">
                             </div>
                     </div>
-
                     <div class="map-panel">
                         <div id="map-container"></div>
                         <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(255,255,255,0.9); padding: 10px; border-radius: 4px; font-size: 11px; z-index: 999; border: 1px solid #ccc;">
@@ -145,36 +159,79 @@
                 </div>
             </div>
 
-            <div id="hr-module" class="view-section hidden" style="overflow-y: auto;">
+            <div id="hr-module" class="view-section hidden" style="height: 100%; overflow-y: auto;">
                 <div class="header">
-                    <h1 style="color: var(--navy); margin: 0;">201 Files (HR)</h1>
-                    <button class="btn"><i class="fa-solid fa-plus"></i> New Hire</button>
+                    <h1 style="color: var(--navy); margin: 0;">Employee Database (201 Files)</h1>
+                    <button class="btn"><i class="fa-solid fa-user-plus"></i> New Hire</button>
                 </div>
                 <div class="file-grid">
                     <div class="file-card">
                         <div style="text-align: center;">
-                            <img src="https://i.pravatar.cc/150?img=11" style="width:80px; height:80px; border-radius:50%; margin-bottom:10px;">
+                            <img src="https://i.pravatar.cc/150?img=11" class="emp-photo">
                             <h3 style="margin:0; color:var(--navy);">John Doe</h3>
                             <p style="margin:0; color:#777; font-size:12px;">Senior Driver</p>
-                            <br>
-                            <button class="btn outline small" style="width:100%; justify-content:center;">View 201 File</button>
+                            <div style="margin: 10px 0;"><span class="badge green">ACTIVE</span></div>
+                            <button class="btn outline small" style="width:100%; justify-content:center;" onclick="open201Modal('John Doe', 'Senior Driver', 'https://i.pravatar.cc/150?img=11')">
+                                <i class="fa-regular fa-folder-open"></i> View 201 File
+                            </button>
                         </div>
                     </div>
                     <div class="file-card">
                         <div style="text-align: center;">
-                            <img src="https://i.pravatar.cc/150?img=3" style="width:80px; height:80px; border-radius:50%; margin-bottom:10px;">
+                            <img src="https://i.pravatar.cc/150?img=3" class="emp-photo">
                             <h3 style="margin:0; color:var(--navy);">Mike Santos</h3>
                             <p style="margin:0; color:#777; font-size:12px;">Forklift Operator</p>
-                            <br>
-                            <button class="btn outline small" style="width:100%; justify-content:center;">View 201 File</button>
+                            <div style="margin: 10px 0;"><span class="badge red">SICK LEAVE</span></div>
+                            <button class="btn outline small" style="width:100%; justify-content:center;" onclick="open201Modal('Mike Santos', 'Forklift Operator', 'https://i.pravatar.cc/150?img=3')">
+                                <i class="fa-regular fa-folder-open"></i> View 201 File
+                            </button>
+                        </div>
+                    </div>
+                     <div class="file-card">
+                        <div style="text-align: center;">
+                            <img src="https://i.pravatar.cc/150?img=5" class="emp-photo">
+                            <h3 style="margin:0; color:var(--navy);">Sarah Lee</h3>
+                            <p style="margin:0; color:#777; font-size:12px;">Dispatcher</p>
+                            <div style="margin: 10px 0;"><span class="badge green">ACTIVE</span></div>
+                            <button class="btn outline small" style="width:100%; justify-content:center;" onclick="open201Modal('Sarah Lee', 'Dispatcher', 'https://i.pravatar.cc/150?img=5')">
+                                <i class="fa-regular fa-folder-open"></i> View 201 File
+                            </button>
+                        </div>
+                    </div>
+                     <div class="file-card">
+                        <div style="text-align: center;">
+                            <img src="https://i.pravatar.cc/150?img=13" class="emp-photo">
+                            <h3 style="margin:0; color:var(--navy);">Rico Jose</h3>
+                            <p style="margin:0; color:#777; font-size:12px;">Junior Driver</p>
+                            <div style="margin: 10px 0;"><span class="badge amber">ON BREAK</span></div>
+                            <button class="btn outline small" style="width:100%; justify-content:center;" onclick="open201Modal('Rico Jose', 'Junior Driver', 'https://i.pravatar.cc/150?img=13')">
+                                <i class="fa-regular fa-folder-open"></i> View 201 File
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <div id="schedule-module" class="view-section hidden" style="height: 100%; display: flex; flex-direction: column;">
+                <div class="header"><h1>Master Schedule</h1></div>
+                <div class="calendar-grid">
+                    <div class="calendar-day"><span class="day-label">Monday</span><div class="event-pill" style="background:var(--navy)">Route 101</div><div class="event-pill" style="background:var(--navy)">Route 102</div></div>
+                    <div class="calendar-day"><span class="day-label">Tuesday</span><div class="event-pill" style="background:var(--red)"><i class="fa-solid fa-user-xmark"></i> Sick: Mike</div></div>
+                    <div class="calendar-day"><span class="day-label">Wednesday</span></div>
+                    <div class="calendar-day"><span class="day-label">Thursday</span><div class="event-pill" style="background:var(--navy)">Route 105</div></div>
+                    <div class="calendar-day"><span class="day-label">Friday</span><div class="event-pill" style="background:var(--amber)"><i class="fa-solid fa-wrench"></i> Truck 04 Maint</div></div>
+                    <div class="calendar-day"><span class="day-label">Saturday</span></div>
+                    <div class="calendar-day"><span class="day-label">Sunday</span></div>
+                </div>
+            </div>
+
             <div id="inventory-module" class="view-section hidden">
                 <div class="header"><h1>Inventory System</h1></div>
-                <p>Inventory Module Content...</p>
+                <table style="width:100%; border-collapse:collapse; background:white; border-radius:8px; overflow:hidden;">
+                    <tr style="background:var(--navy); color:white; text-align:left;"><th style="padding:15px;">SKU</th><th style="padding:15px;">Item</th><th style="padding:15px;">Qty</th><th style="padding:15px;">Status</th></tr>
+                    <tr><td style="padding:15px; border-bottom:1px solid #eee;">#991</td><td style="padding:15px; border-bottom:1px solid #eee;">Hydraulic Pump</td><td style="padding:15px; border-bottom:1px solid #eee;">12</td><td style="padding:15px; border-bottom:1px solid #eee;"><span class="badge green">OK</span></td></tr>
+                    <tr><td style="padding:15px; border-bottom:1px solid #eee;">#552</td><td style="padding:15px; border-bottom:1px solid #eee;">Tires (Forklift)</td><td style="padding:15px; border-bottom:1px solid #eee;">2</td><td style="padding:15px; border-bottom:1px solid #eee;"><span class="badge red">LOW</span></td></tr>
+                </table>
             </div>
 
         </div>
@@ -183,18 +240,14 @@
     <div id="vehicle-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <div class="modal-header">
-                <span><i class="fa-solid fa-truck-front"></i> Vehicle Profile</span>
-                <button onclick="closeModal()" style="background:none; border:none; color:white; font-size:18px; cursor:pointer;">&times;</button>
+                <span><i class="fa-solid fa-truck-front"></i> Edit Vehicle Profile</span>
+                <button onclick="closeModal('vehicle-modal')" style="background:none; border:none; color:white; font-size:18px; cursor:pointer;">&times;</button>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="edit-vehicle-id">
                 <div class="form-group">
                     <label>Assigned Driver</label>
                     <input type="text" id="edit-driver" readonly style="background:#eee;">
-                </div>
-                <div class="form-group">
-                    <label>Vehicle Plate</label>
-                    <input type="text" id="edit-plate" readonly style="background:#eee;">
                 </div>
                 <div class="form-group">
                     <label>Current Status</label>
@@ -205,12 +258,58 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Odometer (Mileage - km)</label>
+                    <label>Odometer (Mileage)</label>
                     <input type="number" id="edit-mileage">
                 </div>
                 <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
-                    <button class="btn outline" onclick="closeModal()">Cancel</button>
+                    <button class="btn outline" onclick="closeModal('vehicle-modal')">Cancel</button>
                     <button class="btn" onclick="saveVehicleChanges()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="file-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="width: 700px;">
+            <div class="modal-header">
+                <span><i class="fa-solid fa-folder-open"></i> Employee 201 File</span>
+                <button onclick="closeModal('file-modal')" style="background:none; border:none; color:white; font-size:18px; cursor:pointer;">&times;</button>
+            </div>
+            <div class="modal-tabs">
+                <div class="modal-tab active">Personal Info</div>
+                <div class="modal-tab">Employment History</div>
+                <div class="modal-tab">Govt IDs</div>
+            </div>
+            <div class="modal-body">
+                <div style="display: flex; gap: 20px;">
+                    <div style="width: 120px; text-align: center;">
+                        <img id="modal-img" src="" style="width: 100px; height: 100px; border-radius: 8px; border: 1px solid #ddd; object-fit: cover;">
+                        <div style="margin-top: 10px; font-weight: bold; color: var(--navy);" id="modal-name-display"></div>
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <div class="info-display" id="modal-name"></div>
+                            </div>
+                            <div class="form-group">
+                                <label>Position</label>
+                                <div class="info-display" id="modal-role"></div>
+                            </div>
+                            <div class="form-group">
+                                <label>SSS Number</label>
+                                <div class="info-display">33-9876543-1</div>
+                            </div>
+                            <div class="form-group">
+                                <label>PhilHealth</label>
+                                <div class="info-display">12-123456789-1</div>
+                            </div>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label style="color: var(--red);">Emergency Contact</label>
+                                <div class="info-display"><b>Maria Doe (Spouse)</b> - 0917-000-0000</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -219,86 +318,22 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
-        // --- DATA: FLEET ---
-        // QC Coordinates: 14.6450, 121.0350
+        // --- DATA ---
         const fleetData = [
-            { 
-                id: 1, driver: "John Doe", img: "https://i.pravatar.cc/150?img=11", 
-                plate: "NCA-1234", type: "Isuzu Giga", status: "On Route", 
-                mileage: 45200, 
-                currentPos: [14.6507, 121.0285], // SM North
-                startPos: [14.6760, 121.0437], // Tandang Sora
-                endPos: [14.6091, 120.9814] // Manila Port
-            },
-            { 
-                id: 2, driver: "Rico Jose", img: "https://i.pravatar.cc/150?img=13", 
-                plate: "XLM-992", type: "L300 Van", status: "Available", 
-                mileage: 12500, 
-                currentPos: [14.6415, 121.0423], // QC Circle
-                startPos: null, endPos: null
-            },
-            { 
-                id: 3, driver: "Mike Santos", img: "https://i.pravatar.cc/150?img=3", 
-                plate: "RTY-551", type: "Wing Van", status: "Maintenance", 
-                mileage: 89000, 
-                currentPos: [14.6178, 121.0572], // Cubao Shop
-                startPos: null, endPos: null
-            },
-            { 
-                id: 4, driver: "Alex Lim", img: "https://i.pravatar.cc/150?img=68", 
-                plate: "ABC-111", type: "Canter", status: "On Route", 
-                mileage: 33100, 
-                currentPos: [14.5844, 121.0609], // Ortigas
-                startPos: [14.6178, 121.0572], // Cubao
-                endPos: [14.5547, 121.0244] // Makati
-            }
+            { id: 1, driver: "John Doe", img: "https://i.pravatar.cc/150?img=11", plate: "NCA-1234", type: "Isuzu Giga", status: "On Route", mileage: 45200, currentPos: [14.6507, 121.0285], startPos: [14.6760, 121.0437], endPos: [14.6091, 120.9814] },
+            { id: 2, driver: "Rico Jose", img: "https://i.pravatar.cc/150?img=13", plate: "XLM-992", type: "L300 Van", status: "Available", mileage: 12500, currentPos: [14.6415, 121.0423], startPos: null, endPos: null },
+            { id: 3, driver: "Mike Santos", img: "https://i.pravatar.cc/150?img=3", plate: "RTY-551", type: "Wing Van", status: "Maintenance", mileage: 89000, currentPos: [14.6178, 121.0572], startPos: null, endPos: null },
+            { id: 4, driver: "Alex Lim", img: "https://i.pravatar.cc/150?img=68", plate: "ABC-111", type: "Canter", status: "On Route", mileage: 33100, currentPos: [14.5844, 121.0609], startPos: [14.6178, 121.0572], endPos: [14.5547, 121.0244] }
         ];
 
-        let map;
-        let markers = {};
-        let routeLine = null;
+        let map, markers = {}, routeLine = null;
 
-        // --- RENDER FLEET LIST ---
-        function renderFleetList() {
-            const container = document.getElementById('fleet-list-container');
-            container.innerHTML = '';
-
-            fleetData.forEach(vehicle => {
-                let badgeColor = 'green';
-                if(vehicle.status === 'On Route') badgeColor = 'blue';
-                if(vehicle.status === 'Maintenance') badgeColor = 'amber';
-
-                const div = document.createElement('div');
-                div.className = 'fleet-item';
-                div.onclick = () => focusVehicle(vehicle.id);
-                div.innerHTML = `
-                    <img src="${vehicle.img}" class="driver-avatar">
-                    <div class="fleet-details">
-                        <div class="fleet-plate">${vehicle.plate} <span class="badge ${badgeColor}">${vehicle.status}</span></div>
-                        <div class="fleet-sub">
-                            <span><i class="fa-solid fa-user"></i> ${vehicle.driver}</span>
-                            <span><i class="fa-solid fa-gauge"></i> ${vehicle.mileage.toLocaleString()} km</span>
-                        </div>
-                        <div class="fleet-sub" style="margin-top:2px;">
-                            <span><i class="fa-solid fa-truck"></i> ${vehicle.type}</span>
-                        </div>
-                    </div>
-                    <div class="fleet-actions">
-                        <button class="btn outline small" onclick="event.stopPropagation(); editProfile(${vehicle.id})">Edit</button>
-                        ${vehicle.status === 'On Route' ? '<button class="btn small"><i class="fa-solid fa-crosshairs"></i> Track</button>' : ''}
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        // --- MAP LOGIC ---
+        // --- MAP FUNCTIONS ---
         function initMap() {
             if (map) return;
             map = L.map('map-container').setView([14.6450, 121.0350], 13);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
-            // Add Markers for all cars initially
+            
             fleetData.forEach(v => {
                 const marker = L.marker(v.currentPos).addTo(map);
                 marker.bindPopup(`<b>${v.plate}</b><br>${v.driver}`);
@@ -310,34 +345,18 @@
             const vehicle = fleetData.find(v => v.id === id);
             if(!vehicle) return;
 
-            // Highlight List Item
             document.querySelectorAll('.fleet-item').forEach(el => el.classList.remove('selected'));
-            // (In a real app, we would target the specific element better, simplified here)
-
-            // Map Actions
+            
             if(map) {
-                // 1. Remove old lines
                 if(routeLine) map.removeLayer(routeLine);
-
-                // 2. Pan to Vehicle
                 map.setView(vehicle.currentPos, 14);
                 markers[vehicle.id].openPopup();
 
-                // 3. Draw Route if Active
                 if(vehicle.status === 'On Route' && vehicle.startPos && vehicle.endPos) {
-                    const latlngs = [
-                        vehicle.startPos,
-                        vehicle.currentPos,
-                        vehicle.endPos
-                    ];
-                    
-                    // Draw Line
+                    const latlngs = [vehicle.startPos, vehicle.currentPos, vehicle.endPos];
                     routeLine = L.polyline(latlngs, {color: '#3a506b', weight: 4, opacity: 0.7, dashArray: '10, 10'}).addTo(map);
-                    
-                    // Add Start/End Markers
-                    L.marker(vehicle.startPos, {icon: createIcon('green')}).addTo(map).bindPopup("Start Point");
-                    L.marker(vehicle.endPos, {icon: createIcon('red')}).addTo(map).bindPopup("Destination");
-                    
+                    L.marker(vehicle.startPos, {icon: createIcon('green')}).addTo(map);
+                    L.marker(vehicle.endPos, {icon: createIcon('red')}).addTo(map);
                     map.fitBounds(routeLine.getBounds(), {padding: [50,50]});
                 }
             }
@@ -352,37 +371,62 @@
             });
         }
 
-        // --- EDIT PROFILE LOGIC ---
+        // --- RENDERERS ---
+        function renderFleetList() {
+            const container = document.getElementById('fleet-list-container');
+            container.innerHTML = '';
+            fleetData.forEach(vehicle => {
+                let badgeColor = vehicle.status === 'On Route' ? 'blue' : (vehicle.status === 'Maintenance' ? 'amber' : 'green');
+                const div = document.createElement('div');
+                div.className = 'fleet-item';
+                div.onclick = () => focusVehicle(vehicle.id);
+                div.innerHTML = `
+                    <img src="${vehicle.img}" class="driver-avatar">
+                    <div class="fleet-details">
+                        <div class="fleet-plate">${vehicle.plate} <span class="badge ${badgeColor}">${vehicle.status}</span></div>
+                        <div class="fleet-sub"><span>${vehicle.driver}</span><span>${vehicle.mileage.toLocaleString()} km</span></div>
+                    </div>
+                    <div class="fleet-actions">
+                        <button class="btn outline small" onclick="event.stopPropagation(); editProfile(${vehicle.id})">Edit</button>
+                        ${vehicle.status === 'On Route' ? '<button class="btn small"><i class="fa-solid fa-crosshairs"></i></button>' : ''}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // --- MODALS ---
         function editProfile(id) {
             const vehicle = fleetData.find(v => v.id === id);
             document.getElementById('edit-vehicle-id').value = vehicle.id;
             document.getElementById('edit-driver').value = vehicle.driver;
-            document.getElementById('edit-plate').value = vehicle.plate;
             document.getElementById('edit-mileage').value = vehicle.mileage;
             document.getElementById('edit-status').value = vehicle.status;
-            
             document.getElementById('vehicle-modal').classList.remove('hidden');
         }
 
         function saveVehicleChanges() {
             const id = parseInt(document.getElementById('edit-vehicle-id').value);
             const vehicle = fleetData.find(v => v.id === id);
-            
             vehicle.mileage = parseInt(document.getElementById('edit-mileage').value);
             vehicle.status = document.getElementById('edit-status').value;
-            
-            closeModal();
-            renderFleetList(); // Refresh UI
-            
-            // Re-render map marker icon color if we were fancy, but text update is enough for prototype
-            alert(`Profile for ${vehicle.plate} updated successfully!`);
+            closeModal('vehicle-modal');
+            renderFleetList();
         }
 
-        function closeModal() {
-            document.getElementById('vehicle-modal').classList.add('hidden');
+        function open201Modal(name, role, imgSrc) {
+            document.getElementById('modal-name').innerText = name;
+            document.getElementById('modal-name-display').innerText = name;
+            document.getElementById('modal-role').innerText = role;
+            document.getElementById('modal-img').src = imgSrc;
+            document.getElementById('file-modal').classList.remove('hidden');
         }
 
-        // --- NAVIGATION ---
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        // --- VIEW CONTROLLER ---
         function login() {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('dashboard-screen').classList.remove('hidden');
@@ -398,212 +442,10 @@
         function showView(viewId, element) {
             document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
             document.getElementById(viewId).classList.remove('hidden');
-            
             document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
             element.classList.add('active');
-
-            if(viewId === 'dispatch-module') {
-                setTimeout(() => { if(map) map.invalidateSize(); }, 100);
-            }
+            if(viewId === 'dispatch-module') setTimeout(() => { if(map) map.invalidateSize(); }, 100);
         }
-
-
-        
     </script>
-
-    <p style="color: #666; font-size: 14px;">Human Resources & Ops V6.0</p>
-            <input type="text" placeholder="User ID" value="ADMIN-01">
-            <input type="password" placeholder="Password" value="password">
-            <button class="btn" style="width: 100%; justify-content: center;" onclick="login()">SECURE LOGIN</button>
-        </div>
-    </div>
-
-    <div id="dashboard-screen" class="hidden">
-        
-        <div class="sidebar">
-            <div class="sidebar-header"><i class="fa-solid fa-layer-group"></i> COMMAND CENTER</div>
-            <div class="menu-item active" onclick="showView('war-room', this)"><i class="fa-solid fa-map-location-dot"></i> Live Map</div>
-            <div class="menu-item" onclick="showView('hr-module', this)"><i class="fa-solid fa-users"></i> 201 Files (HR)</div>
-            <div class="menu-item" onclick="showView('calendar-view', this)"><i class="fa-solid fa-calendar-days"></i> Schedule</div>
-            <div class="menu-item" onclick="showView('inventory', this)"><i class="fa-solid fa-boxes-stacked"></i> Inventory</div>
-            <div style="margin-top: auto;"></div>
-            <div class="menu-item" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</div>
-        </div>
-
-        <div class="main-content">
-            
-            <div id="war-room" class="view-section">
-                <div class="header">
-                    <h1 style="color: var(--navy); margin: 0;">Live Fleet Tracker</h1>
-                    <div style="color: #666;"><i class="fa-regular fa-clock"></i> <span id="clock">10:42 AM</span></div>
-                </div>
-                <div id="map-container"></div>
-            </div>
-
-            <div id="hr-module" class="view-section hidden">
-                <div class="header">
-                    <h1 style="color: var(--navy); margin: 0;">Employee Database (201 Files)</h1>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" placeholder="Search Employee..." style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 200px;">
-                        <button class="btn"><i class="fa-solid fa-user-plus"></i> New Hire</button>
-                    </div>
-                </div>
-
-                <div class="file-grid">
-                    <div class="file-card">
-                        <div style="position: absolute; top: 15px; right: 15px;"><span class="badge green">ACTIVE</span></div>
-                        <div style="text-align: center;">
-                            <img src="https://i.pravatar.cc/150?img=11" class="emp-photo">
-                            <h3 style="margin: 0; color: var(--navy);">John Doe</h3>
-                            <p style="margin: 5px 0 15px 0; color: #777; font-size: 13px;">Senior Truck Driver</p>
-                        </div>
-                        <div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
-                            <div class="info-row"><span>ID No:</span> <b>EMP-2021-04</b></div>
-                            <div class="info-row"><span>Department:</span> <b>Logistics / Fleet</b></div>
-                            <div class="info-row"><span>Mobile:</span> <b>0917-123-4567</b></div>
-                        </div>
-                        <button class="btn outline" style="width: 100%; justify-content: center;" onclick="open201Modal('John Doe', 'Senior Truck Driver', 'https://i.pravatar.cc/150?img=11')">
-                            <i class="fa-regular fa-folder-open"></i> View 201 File
-                        </button>
-                    </div>
-
-                    <div class="file-card">
-                        <div style="position: absolute; top: 15px; right: 15px;"><span class="badge red">SICK LEAVE</span></div>
-                        <div style="text-align: center;">
-                            <img src="https://i.pravatar.cc/150?img=8" class="emp-photo">
-                            <h3 style="margin: 0; color: var(--navy);">Mike Santos</h3>
-                            <p style="margin: 5px 0 15px 0; color: #777; font-size: 13px;">Forklift Operator</p>
-                        </div>
-                        <div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
-                            <div class="info-row"><span>ID No:</span> <b>EMP-2022-12</b></div>
-                            <div class="info-row"><span>Department:</span> <b>Warehouse</b></div>
-                            <div class="info-row"><span>Mobile:</span> <b>0918-999-8888</b></div>
-                        </div>
-                        <button class="btn outline" style="width: 100%; justify-content: center;" onclick="open201Modal('Mike Santos', 'Forklift Operator', 'https://i.pravatar.cc/150?img=8')">
-                            <i class="fa-regular fa-folder-open"></i> View 201 File
-                        </button>
-                    </div>
-
-                    <div class="file-card">
-                        <div style="position: absolute; top: 15px; right: 15px;"><span class="badge green">ACTIVE</span></div>
-                        <div style="text-align: center;">
-                            <img src="https://i.pravatar.cc/150?img=5" class="emp-photo">
-                            <h3 style="margin: 0; color: var(--navy);">Sarah Lee</h3>
-                            <p style="margin: 5px 0 15px 0; color: #777; font-size: 13px;">Dispatcher</p>
-                        </div>
-                        <div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
-                            <div class="info-row"><span>ID No:</span> <b>EMP-2020-01</b></div>
-                            <div class="info-row"><span>Department:</span> <b>Operations</b></div>
-                            <div class="info-row"><span>Mobile:</span> <b>0922-333-4444</b></div>
-                        </div>
-                        <button class="btn outline" style="width: 100%; justify-content: center;" onclick="open201Modal('Sarah Lee', 'Dispatcher', 'https://i.pravatar.cc/150?img=5')">
-                            <i class="fa-regular fa-folder-open"></i> View 201 File
-                        </button>
-                    </div>
-
-                     <div class="file-card">
-                        <div style="position: absolute; top: 15px; right: 15px;"><span class="badge amber">ON BREAK</span></div>
-                        <div style="text-align: center;">
-                            <img src="https://i.pravatar.cc/150?img=13" class="emp-photo">
-                            <h3 style="margin: 0; color: var(--navy);">Rico Jose</h3>
-                            <p style="margin: 5px 0 15px 0; color: #777; font-size: 13px;">Junior Driver</p>
-                        </div>
-                        <div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
-                            <div class="info-row"><span>ID No:</span> <b>EMP-2023-08</b></div>
-                            <div class="info-row"><span>Department:</span> <b>Logistics / Fleet</b></div>
-                            <div class="info-row"><span>Mobile:</span> <b>0917-555-6666</b></div>
-                        </div>
-                        <button class="btn outline" style="width: 100%; justify-content: center;" onclick="open201Modal('Rico Jose', 'Junior Driver', 'https://i.pravatar.cc/150?img=13')">
-                            <i class="fa-regular fa-folder-open"></i> View 201 File
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="calendar-view" class="view-section hidden">
-                <div class="header"><h1>Schedule</h1></div>
-                <div class="calendar-grid">
-                     <div class="calendar-day"><b>01</b><br><div class="event-pill" style="background:var(--navy)">Route 101</div></div>
-                     <div class="calendar-day"><b>02</b><br><div class="event-pill" style="background:var(--red)">Sick: Mike</div></div>
-                     <div class="calendar-day"><b>03</b></div>
-                     <div class="calendar-day"><b>04</b><br><div class="event-pill" style="background:var(--navy)">Route 102</div></div>
-                     <div class="calendar-day"><b>05</b><br><div class="event-pill" style="background:var(--amber)">Maintenance</div></div>
-                     <div class="calendar-day"><b>06</b></div>
-                     <div class="calendar-day"><b>07</b></div>
-                </div>
-            </div>
-
-             <div id="inventory" class="view-section hidden">
-                <div class="header"><h1>Inventory</h1></div>
-                <table class="data-table">
-                    <tr><th>SKU</th><th>Item</th><th>Qty</th><th>Status</th></tr>
-                    <tr><td>#991</td><td>Tires</td><td>12</td><td><span class="badge green">OK</span></td></tr>
-                </table>
-            </div>
-
-        </div>
-    </div>
-
-    <div id="file-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <div style="background: var(--navy); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
-                <div style="display: flex; gap: 15px; align-items: center;">
-                    <i class="fa-solid fa-folder-open fa-lg"></i>
-                    <h2 style="margin: 0; font-size: 18px;">Employee 201 File</h2>
-                </div>
-                <button onclick="closeModal()" style="background:none; border:none; color:white; font-size:24px; cursor:pointer;">&times;</button>
-            </div>
-            
-            <div class="modal-tabs">
-                <div class="modal-tab active">Personal Information</div>
-                <div class="modal-tab">Employment History</div>
-                <div class="modal-tab">Government IDs</div>
-                <div class="modal-tab">Documents</div>
-            </div>
-
-            <div style="padding: 25px; overflow-y: auto;">
-                <div style="display: flex; gap: 25px;">
-                    <div style="width: 150px; text-align: center;">
-                        <img id="modal-img" src="" style="width: 120px; height: 120px; border-radius: 8px; border: 1px solid #ddd; object-fit: cover;">
-                        <button class="btn outline" style="width: 100%; font-size: 11px; margin-top: 10px;">Upload Photo</button>
-                        <div style="margin-top: 20px; text-align: left;">
-                            <label style="font-size: 10px; color: #999; font-weight: bold;">STATUS</label>
-                            <div style="color: var(--green); font-weight: bold; font-size: 14px;"><i class="fa-solid fa-circle" style="font-size: 10px;"></i> REGULAR</div>
-                        </div>
-                    </div>
-
-                    <div style="flex: 1;">
-                        <h2 id="modal-name" style="margin: 0 0 5px 0; color: var(--navy);"></h2>
-                        <p id="modal-role" style="color: #777; margin: 0 0 20px 0;"></p>
-
-                        <div class="form-grid">
-                            <div class="form-group"><label>Date Hired</label><div>March 15, 2021</div></div>
-                            <div class="form-group"><label>Date of Birth</label><div>November 2, 1988</div></div>
-                            
-                            <div class="form-group"><label>SSS Number</label><div>33-9876543-1</div></div>
-                            <div class="form-group"><label>PhilHealth No.</label><div>12-123456789-1</div></div>
-                            <div class="form-group"><label>TIN</label><div>123-456-789-000</div></div>
-                            <div class="form-group"><label>Pag-IBIG</label><div>1234-5678-9012</div></div>
-
-                            <div class="form-group" style="grid-column: span 2;">
-                                <label>Current Address</label>
-                                <div>Block 5, Lot 2, Camella Homes, Quezon City, Metro Manila</div>
-                            </div>
-                            
-                            <div class="form-group" style="grid-column: span 2;">
-                                <label style="color: var(--red);">Emergency Contact</label>
-                                <div><b>Maria Doe (Spouse)</b> - 0917-000-0000</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div style="background: #f8f9fa; padding: 15px 25px; text-align: right; border-top: 1px solid #eee;">
-                <button class="btn outline" onclick="closeModal()">Close</button>
-                <button class="btn">Print 201 File</button>
-            </div>
-        </div>
-    </div>
 </body>
 </html>
